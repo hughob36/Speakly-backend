@@ -2,7 +2,6 @@ package com.speakly.service;
 
 import com.speakly.dto.TutorResponseDTO;
 import com.speakly.exception.EmptyAudioFileException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
