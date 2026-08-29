@@ -32,23 +32,31 @@ public class VoiceChatService {
         var transcriptionResponse = transcriptionModel.call(
                 new AudioTranscriptionPrompt(audioFile.getResource())
         );
-        String userText = transcriptionResponse.getResult().getOutput();
+        String userText = transcriptionResponse != null && transcriptionResponse.getResult() != null
+                ? transcriptionResponse.getResult().getOutput()
+                : null;
 
-        // 2. Llamada al LLM pasando el builder de opciones compatible con Spring AI
+        // 2. Si la transcripción viene vacía o nula, responder con mensaje por defecto
+        if (userText == null || userText.isBlank()) {
+            String fallbackText = (userText == null) ? "" : userText;
+            return new TutorResponseDTO(fallbackText, "Could you repeat that? I couldn't hear you.");
+        }
+            // 2. Llamada al LLM pasando el builder de opciones compatible con Spring AI
         String tutorReply = chatClient.prompt()
-                .options(OpenAiChatOptions.builder()
-                        .model("openai/gpt-oss-20b")
-                        .temperature(0.3)
-                        .maxTokens(500))
-                .system("""
+                    .options(OpenAiChatOptions.builder()
+                            .model("openai/gpt-oss-20b")
+                            .temperature(0.3)
+                            .maxTokens(500))
+                    .system("""
                     You are a friendly and encouraging English conversation tutor.
                     1. If the user makes any grammar, phrasing, or vocabulary mistake, gently correct it first in 1 concise sentence.
                     2. Continue the conversation naturally in 2 short sentences.
                     3. Always finish by asking an open-ended question to keep talking.
                     """)
-                .user(userText)
-                .call()
-                .content();
+                    .user(userText)
+                    .call()
+                    .content();
+
 
         return new TutorResponseDTO(userText, tutorReply);
     }
