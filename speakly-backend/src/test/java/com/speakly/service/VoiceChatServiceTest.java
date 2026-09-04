@@ -54,7 +54,7 @@ class VoiceChatServiceTest {
     }
 
     @Test
-    @DisplayName("Debe procesar el audio correctamente y devolver la transcripción junto a la respuesta del tutor")
+    @DisplayName("Should process audio successfully and return transcribed text with tutor reply")
     void processVoiceConversation_Success() {
         // Arrange
         String transcribedText = "Hello, how are you today?";
@@ -90,7 +90,7 @@ class VoiceChatServiceTest {
     }
 
     @Test
-    @DisplayName("Debe lanzar EmptyAudioFileException cuando el archivo MultipartFile es null")
+    @DisplayName("Should throw EmptyAudioFileException when audio file is null")
     void processVoiceConversation_ThrowsException_WhenAudioFileIsNull() {
         EmptyAudioFileException exception = assertThrows(
                 EmptyAudioFileException.class,
@@ -103,7 +103,7 @@ class VoiceChatServiceTest {
     }
 
     @Test
-    @DisplayName("Debe lanzar EmptyAudioFileException cuando el archivo de audio está vacío")
+    @DisplayName("Should throw EmptyAudioFileException when audio file is empty")
     void processVoiceConversation_ThrowsException_WhenAudioFileIsEmpty() {
         when(audioFile.isEmpty()).thenReturn(true);
 

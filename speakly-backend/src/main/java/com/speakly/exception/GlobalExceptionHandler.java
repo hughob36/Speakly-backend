@@ -16,45 +16,45 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. Audio vacío o nulo según la validación de tu servicio (HTTP 400)
+    // 1. Audio file empty or missing based on service validation (HTTP 400)
     @ExceptionHandler(EmptyAudioFileException.class)
     public ResponseEntity<ErrorResponseDTO> handleEmptyAudioFileException(EmptyAudioFileException ex) {
-        log.warn("Solicitud inválida de audio: {}", ex.getMessage());
+        log.warn("Invalid audio request: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponseDTO(ex.getMessage()));
     }
 
-    // 2. No se adjuntó el campo multipart requerido "file" (HTTP 400)
+    // 2. Missing required multipart part 'file' (HTTP 400)
     @ExceptionHandler({
             MissingServletRequestPartException.class,
             MissingServletRequestParameterException.class
     })
     public ResponseEntity<ErrorResponseDTO> handleMissingFileException(Exception ex) {
-        log.warn("Falta el archivo de audio requerido en la petición: {}", ex.getMessage());
+        log.warn("Required audio file is missing from request: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponseDTO("Required request part 'file' is missing."));
     }
 
-    // 3. El archivo supera el límite configurado en application.properties (HTTP 413)
+    // 3. Audio file exceeds maximum configured upload size (HTTP 413)
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorResponseDTO> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex) {
-        log.warn("El archivo de audio supera el tamaño máximo permitido: {}", ex.getMessage());
+        log.warn("Audio file exceeds maximum allowed upload size: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 .body(new ErrorResponseDTO("The audio file exceeds the maximum allowed upload size."));
     }
 
-    // 4. Errores directos devueltos por la API de Groq/OpenAI (401, 429, 500, etc.) o timeout de red (HTTP 502)
+    // 4. External AI API error response (401, 429, 500, etc.) or network timeout (HTTP 502)
     @ExceptionHandler({RestClientResponseException.class, ResourceAccessException.class})
     public ResponseEntity<ErrorResponseDTO> handleExternalApiException(Exception ex) {
-        log.error("Error al comunicar con la API de IA: {}", ex.getMessage());
+        log.error("Error communicating with AI API: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                 .body(new ErrorResponseDTO("AI service communication error. Please try again later."));
     }
 
-    // 5. Fallback para errores no controlados (HTTP 500)
+    // 5. Fallback for unhandled critical errors (HTTP 500)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
-        log.error("ERROR CRÍTICO NO CONTROLADO: ", ex);
+        log.error("CRITICAL UNHANDLED ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponseDTO("An unexpected error occurred on the server."));
     }
