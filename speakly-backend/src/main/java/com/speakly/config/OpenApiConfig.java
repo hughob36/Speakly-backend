@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -15,16 +16,15 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
+        List<Server> servers = new ArrayList<>();
+
         Server prodServer = new Server();
         prodServer.setUrl("https://speakly-backend.duckdns.org");
-        prodServer.setDescription("Producción VPS (OCI - HTTPS)");
-
-        Server localServer = new Server();
-        localServer.setUrl("http://localhost:8080");
-        localServer.setDescription("Entorno Local");
+        prodServer.setDescription("Producción VPS (HTTPS)");
+        servers.add(prodServer);
 
         return new OpenAPI()
-                .servers(List.of(prodServer, localServer))
+                .servers(servers)
                 .info(new Info()
                         .title("Speakly AI - Voice API")
                         .version("1.0.0")
@@ -36,5 +36,4 @@ public class OpenApiConfig {
                                 .name("Apache 2.0")
                                 .url("https://springdoc.org")));
     }
-
 }
