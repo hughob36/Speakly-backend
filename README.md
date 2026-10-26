@@ -19,6 +19,14 @@ El servicio procesa audios de voz enviados por el usuario, realiza la transcripc
 
 ---
 
+## 📖 Documentación de la API
+
+Puedes explorar y probar los endpoints de la API de forma interactiva en el siguiente enlace de despliegue:
+
+- **Swagger UI:** [https://speakly-backend.duckdns.org/swagger-ui/index.html#/](https://speakly-backend.duckdns.org/swagger-ui/index.html#/)
+
+---
+
 ## 🧠 Flujo de la Conversación
 
 ```text
